@@ -4,6 +4,6 @@ require 'rspec'
 require 'require_all'
 require 'bundler'
 
-Bundler.require
+# Bundler.require
 
 require_all 'lib'
