@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe 'Scraper.scrape_book_list' do
 
-  let!(:books_index_array) {[{:title=>"Who Was Rosa Parks?", :author=>"Yona Zeldis McDonough",   :url=>"https://nypl.overdrive.com/media/2381206?cid=26060"}]}
+  let!(:books_index_array) {[{:title=>"Who Was Rosa Parks?", :author=>"Yona Zeldis McDonough",   :url=>"https://nypl.overdrive.com/media/2381206?cid=26060"},
+  {:title=>"Frostbite", :author=>"Richelle Mead",   :url=>"https://nypl.overdrive.com/media/3758613?cid=26060"},
+  {:title=>"Knucklehead", :author=>"Jon Scieszka ",   :url=>"https://nypl.overdrive.com/media/3758645?cid=26060"}]}
 
 
 
