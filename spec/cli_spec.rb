@@ -1,18 +1,43 @@
 require 'spec_helper'
 
-# describe 'CLI.run' do
-#   it 'puts "hi there"' do
-#     allow($stdout).to receive(:puts)
-#     expect($stdout).to receive(:puts).with("hi there")
-#     CLI.new.run
-#   end
-# end
-
-describe '#show_info_for(book)' do
-
+context 'CLI' do
+     
   let!(:book_hash) {  
       {:title=>"Who Was Rosa Parks?", :author=>"Yona Zeldis McDonough", :description=>'In 1955, Rosa Parks refused to give her bus seat to a white passenger in Montgomery, Alabama. This seemingly small act triggered civil rights protests across America and earned Rosa Parks the title "Mother of the Civil Rights Movement."',:duration=>"01:08:56", :year=>"2016"}
     }
+
+  describe '#book_from_list(url:)' do
+
+  it 'Shows the books on the page at the URL given' do
+    allow($stdout).to receive(:puts)
+    expect($stdout).to receive(:puts).with("1. Who Was Rosa Parks? - Yona Zeldia McDonough")
+    expect($stdout).to receive(:puts).with("2. Frostbite - Richelle Mead")
+
+    CLI.new.book_from_list
+  end
+
+  it 'asks the user to choose a book' do
+    allow($stdout).to receive(:puts)
+    expect($stdout).to receive(:puts).with("Enter the number for a book you'd like to know more about:")
+    CLI.new.book_from_list
+  end 
+
+  # it 'gets the user\'s input' do
+  #   cli = CLI.new
+  #   allow($stdout).to receive(:puts)
+  #   allow(cli).to receive(:gets).and_return('1')
+  #   expect(cli.book_from_list).to eq(1)
+  # end
+
+  it 'returns that book as an object' do
+    cli = CLI.new
+    allow($stdout).to receive(:puts)
+    allow(cli).to receive(:gets).and_return('1')
+    expect(cli.book_from_list).to eq(Book.create_from_hash(book_hash))
+  end
+end
+
+describe '#show_info_for(book)' do
 
   it 'shows info for a book' do
 
@@ -30,4 +55,5 @@ describe '#show_info_for(book)' do
 
     CLI.new.show_info_for(book)
   end
+end
 end
