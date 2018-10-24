@@ -15,7 +15,7 @@ class CLI
     }
   end
 
-  def run
+  def show_list
     puts "Here are some audiobooks currently available for download at NYPL:"
     puts ""
     puts "1. Who Was Rosa Parks? - Yona Zeldia McDonough"
@@ -23,15 +23,23 @@ class CLI
     puts ""
     puts "Enter the number for a book you'd like to know more about:"
     num = gets.strip.to_i # TO-DO: Validate input
+  end
+
+  def show_info_for(book_at_url:)
     puts ""
-    puts "Who Was Rosa Parks? (2016)"
-    puts "by Yona Zeldia McDonough"
-    puts "Length: 1:08:56"
+    puts "\"Who Was Rosa Parks?\" (2016)"
+    puts "by Yona Zeldis McDonough"
+    puts "Length: 01:08:56"
     puts ""
     puts 'In 1955, Rosa Parks refused to give her bus seat to a white passenger in Montgomery, Alabama. This seemingly small act triggered civil rights protests across America and earned Rosa Parks the title "Mother of the Civil Rights Movement."'
     puts ""
+  end 
+
+  def run
+    show_list
+    show_info_for(:book)
   end
 
 end
 
-CLI.new.run
+# CLI.new.run
