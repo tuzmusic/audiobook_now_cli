@@ -12,12 +12,16 @@ class Book
 
   def self.create_from_hash(hash)
     raise ArgumentError, 'Must provide a title and an author' if !hash[:title] || !hash[:author]
-    
+
     book = self.new(title: hash[:title], author: hash[:author])
     book.year = hash[:year] 
     book.description = hash[:description] 
     book.duration = hash[:duration] 
     book
+  end
+
+  def listing
+    "#{self.title} - #{self.author}"
   end
 
   def initialize(title:, author:, available: true)
