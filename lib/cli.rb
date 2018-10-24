@@ -4,6 +4,7 @@ class CLI
 
   def get_books_from(url:)
     list = Scraper.scrape_book_list(url)
+    binding.pry
     books = list.map { |hash| Book.create_from_hash(hash) }
   end
 
@@ -45,4 +46,4 @@ class CLI
 
 # end
 
-# CLI.new.run
+CLI.new.run
