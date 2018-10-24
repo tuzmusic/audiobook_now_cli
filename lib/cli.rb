@@ -1,11 +1,9 @@
 require_relative '../config/environment.rb'
-# require_relative '../lib/scraper.rb'
 
 class CLI
 
   def get_books_from(url)
     list = Scraper.scrape_book_list(url)
-    # binding.pry
     books = list.map { |hash| Book.create_from_hash(hash) }
   end
 
@@ -15,10 +13,12 @@ class CLI
   end
 
   def select_book(books)
-    puts "\nEnter the number for a book you'd like to know more about, or type \"exit\" to quit."
-    input = gets.strip
-    return nil if input.downcase == "exit"
-    num = input.strip.to_i # TO-DO: Validate input
+    loop {
+      puts "\nEnter the number for a book you'd like to know more about."
+      input = gets.strip
+      num = input.strip.to_i 
+      break if num > 0 && num <= books.count
+    }
     books[num - 1]
   end
 
@@ -32,19 +32,23 @@ class CLI
     puts ''
   end 
 
+  def another_book?
+    puts "Do you want to see information for another book? (y/n)"
+    another = gets.strip == 'y'
+  end
+
   def run
     url = "./fixtures/available-now-list/available-now.htm"
     books = get_books_from(url)
     
-    loop
+    loop {
       show_list(books)  
-      book = select_book(books) # "exit" returns nil
-      # break if book == false
+      book = select_book(books)
       show_info_for(book)
-    end
+      break if another_book? == false
+    }
 
   end
 
-# end
+end
 
-CLI.new.run
