@@ -1,7 +1,5 @@
-# require 'open-uri'
-# require 'nokogiri'
-# require 'pry'
 require_relative '../config/environment.rb'
+
 class Scraper
 
   def self.scrape_book_list(url)
