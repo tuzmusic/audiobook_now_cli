@@ -22,9 +22,6 @@ class Scraper
     books_hash
   end
 
-
-#  finding the duration:   doc.css('li[aria-label^="Duration"]').first.text
-
   def self.scrape_book_page(url)
     html = open(url)
     doc = Nokogiri::HTML(html)

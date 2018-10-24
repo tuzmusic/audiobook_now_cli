@@ -2,32 +2,27 @@ require_relative '../config/environment.rb'
 
 class CLI
 
-  def _run
-    puts "Here are some audiobooks currently available for download at NYPL:"
-    nypl_url = "./fixtures/available-now-list/available-now.htm"
+  def get_books_from(url:)
     
-    # list = Scraper.scrape_book_list(nypl_url)
-    list = Book.available_books
-
-    list.each.with_index(1) { |book, i|
-      puts "#{i}. #{book.title} - #{book.author}"
-      # puts "#{i}. #{book[:title]} - #{book[:author]}"
-    }
   end
 
-  def book_from_list(url:"./fixtures/available-now-list/available-now.htm")
+  def book_from_list(url)
+    
+    list = Scraper.scrape_book_list(url)
+    books = list.map { |hash| Book.create_from_hash(hash) }
+
     puts "Here are some audiobooks currently available for download at NYPL:"
     puts ""
-    puts "1. Who Was Rosa Parks? - Yona Zeldia McDonough"
-    puts "2. Frostbite - Richelle Mead"
+    show_books(books)
     puts ""
     puts "Enter the number for a book you'd like to know more about:"
     num = gets.strip.to_i # TO-DO: Validate input
+    books[num - 1]
+  end
 
-    book = Book.new(title:"Who Was Rosa Parks?", author:"Yona Zeldia McDonough").tap {|book|
-      book.description = 'In 1955, Rosa Parks refused to give her bus seat to a white passenger in Montgomery, Alabama. This seemingly small act triggered civil rights protests across America and earned Rosa Parks the title "Mother of the Civil Rights Movement."'
-      book.duration = "01:08:56"
-      book.year = "2016"
+  def show_books(books_list)
+    books_list.each.with_index(1) { |book, i|
+      puts "#{i}. #{book.title} - #{book.author}"
     }
   end
 
@@ -42,6 +37,8 @@ class CLI
   end 
 
   def run
+    url = "./fixtures/available-now-list/available-now.htm"
+    books = get_books_from(url: url)
     book = book_from_list
     show_info_for(book)
   end
