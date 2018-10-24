@@ -1,10 +1,11 @@
 require_relative '../config/environment.rb'
+# require_relative '../lib/scraper.rb'
 
 class CLI
 
-  def get_books_from(url:)
+  def get_books_from(url)
     list = Scraper.scrape_book_list(url)
-    binding.pry
+    # binding.pry
     books = list.map { |hash| Book.create_from_hash(hash) }
   end
 
@@ -33,7 +34,7 @@ class CLI
 
   def run
     url = "./fixtures/available-now-list/available-now.htm"
-    books = get_books_from(url: url)
+    books = get_books_from(url)
     
     loop
       show_list(books)  
