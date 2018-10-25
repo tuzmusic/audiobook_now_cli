@@ -3,26 +3,29 @@ require_relative '../config/environment.rb'
 class CLI
 
   def get_books_from(url)
+
     list = Scraper.scrape_book_list(url) # => array of hashes, with urls
-
     book_urls = list.map { |book| book[:url] }
-    book_hashes = book_urls.map { |url| Scraper.scrape_book_page(url) }
-    books = book_hashes.map { |hash| Book.create_from_hash(hash) } 
+    # book_hashes = 
+    book_urls.each{ |url| 
+      hash = Scraper.scrape_book_page(url)
+      Book.create_from_hash(hash)
+      puts "#{Book.all.count}. #{Book.all.last.listing}"      
+    }
+    # book_hashes.each { |hash| Book.create_from_hash(hash) } 
   end
 
-  def show_list(books)
+  def show_list
     puts "\n"+"Here are some audiobooks currently available for download at NYPL:"+"\n\n"
-    books.each.with_index(1) { |book, i| puts "#{i}. #{book.listing}" }
+    Book.all.each.with_index(1) { |book, i| puts "#{i}. #{book.listing}" }
   end
 
-  def select_book(books)
+  def select_book
     loop {
       puts "\n"+"Enter the number for a book you'd like to know more about."
-      input = gets.strip
-      num = input.strip.to_i 
-      return books[num - 1] if num > 0 && num <= books.count
-    }
-    
+      num = gets.strip.to_i 
+      return Book.all[num - 1] if num > 0 && num <= Book.all.count  # 'return' breaks the loop. it's necessary!
+    }    
   end
 
   def show_info_for(book)
@@ -38,17 +41,18 @@ class CLI
   end
 
   def run
-    puts "Loading books. Sorry, this could take a few seconds...\n"
-
-    # url = "./fixtures/available-now-list/available-now.htm"
-    url = "https://nypl.overdrive.com/collection/26060"
-    books = get_books_from(url)  
+    url = "./fixtures/available-now-list/available-now.htm"
+    # url = "https://nypl.overdrive.com/collection/26060"
+    
+    puts "\n"+"Here are some audiobooks currently available for download at NYPL:"+"\n\n"
+    puts "Loading books..."+"\n\n"
+    
+    get_books_from(url)  # populates Book.all 
 
     loop {
-      show_list(books)  
-      book = select_book(books)
-      show_info_for(book)
+      show_info_for(select_book)
       break if another_book? == false
+      show_list
     }
 
   end

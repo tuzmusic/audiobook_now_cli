@@ -9,6 +9,10 @@ class Book
   def self.available_books
     @@available
   end
+  
+  def self.all
+    @@available
+  end
 
   def self.create_from_hash(hash)
     raise ArgumentError, 'Must provide a title and an author' if !hash[:title] || !hash[:author]

@@ -6,7 +6,6 @@ class Scraper
     html = open(url)
     doc = Nokogiri::HTML(html)
     books = doc.css('.js-titleCard')
-    binding.pry
     books_hash = books.map { |book|
       hash = {}
       title_elem = book.css('.title-name').first
