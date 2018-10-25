@@ -41,12 +41,12 @@ class CLI
   end
 
   def run
-    url = "./fixtures/available-now-list/available-now.htm"
-    # url = "https://nypl.overdrive.com/collection/26060"
+    # url = "./fixtures/available-now-list/available-now.htm"
+    url = "https://nypl.overdrive.com/collection/26060"
     
     puts "\n"+"Here are some audiobooks currently available for download at NYPL:"+"\n\n"
     puts "Loading books..."+"\n\n"
-    
+
     get_books_from(url)  # populates Book.all 
 
     loop {

@@ -3,20 +3,28 @@
 class Scraper
 
   def self.scrape_book_list(url)
+    
+    session = Capybara::Session.new(:poltergeist)
+    session.visit(url)
+
     html = open(url)
     doc = Nokogiri::HTML(html)
-    books = doc.css('.js-titleCard')
+
+    # books = doc.css('.js-titleCard')
+    books = session.all('.js-titleCard')
     books_hash = books.map { |book|
       hash = {}
-      title_elem = book.css('.title-name').first
-      hash[:title] = title_elem.text.strip
 
-      auth_elem = book.css('[aria-label^="Search by author"]')
-      hash[:author] = auth_elem.text.strip
+      # hash[:title] = book.css('.title-name').first.text.strip
+      hash[:title] = book.first('.title-name').text.strip
+
+      # hash[:author] = book.css('[aria-label^="Search by author"]').text.strip
+      hash[:author] = book.first('[aria-label^="Search by author"]').text.strip
       
-      url_elem = title_elem.css('a').first
-      hash[:url] = url_elem['href']
-
+      # url_elem = title_elem.css('a').first
+      # hash[:url] = url_elem['href']
+      hash[:url] = book.first('.title-name').first('a')['href']
+      # binding.pry
       hash 
     } 
     books_hash
