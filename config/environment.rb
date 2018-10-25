@@ -1,5 +1,6 @@
 require 'pry'
 require 'nokogiri'
+require 'open-uri'
 require 'rspec'
 require 'require_all'
 require 'bundler'

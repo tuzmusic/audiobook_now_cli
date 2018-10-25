@@ -2,7 +2,7 @@
 
 class Book
   
-  attr_accessor :title, :author, :available, :duration, :year, :description
+  attr_accessor :title, :author, :available, :duration, :year, :description, :url
 
   @@available = []
 
@@ -14,6 +14,7 @@ class Book
     raise ArgumentError, 'Must provide a title and an author' if !hash[:title] || !hash[:author]
 
     book = self.new(title: hash[:title], author: hash[:author])
+    book.url = hash[:url]
     book.year = hash[:year] 
     book.description = hash[:description] 
     book.duration = hash[:duration] 
@@ -21,7 +22,7 @@ class Book
   end
 
   def listing
-    "#{self.title} - #{self.author}"
+    "#{self.title} - #{self.author} (#{self.duration})"
   end
 
   def initialize(title:, author:, available: true)

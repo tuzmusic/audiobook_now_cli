@@ -3,44 +3,47 @@ require_relative '../config/environment.rb'
 class CLI
 
   def get_books_from(url)
-    list = Scraper.scrape_book_list(url)
-    books = list.map { |hash| Book.create_from_hash(hash) }
+    list = Scraper.scrape_book_list(url) # => array of hashes, with urls
+
+    book_urls = list.map { |book| book[:url] }
+    book_hashes = book_urls.map { |url| Scraper.scrape_book_page(url) }
+    books = book_hashes.map { |hash| Book.create_from_hash(hash) } 
   end
 
   def show_list(books)
-    puts "Here are some audiobooks currently available for download at NYPL:\n"
+    puts "\n"+"Here are some audiobooks currently available for download at NYPL:"+"\n\n"
     books.each.with_index(1) { |book, i| puts "#{i}. #{book.listing}" }
   end
 
   def select_book(books)
     loop {
-      puts "\nEnter the number for a book you'd like to know more about."
+      puts "\n"+"Enter the number for a book you'd like to know more about."
       input = gets.strip
       num = input.strip.to_i 
-      break if num > 0 && num <= books.count
+      return books[num - 1] if num > 0 && num <= books.count
     }
-    books[num - 1]
+    
   end
 
   def show_info_for(book)
-    puts ''
-    puts "\"#{book.title}\" (#{book.year})"
+    puts "\n" + "\"#{book.title}\" (#{book.year})"
     puts "by #{book.author}"
     puts "Length: #{book.duration}"
-    puts ''
-    puts book.description 
-    puts ''
+    puts "\n"+ book.description + "\n"
   end 
 
   def another_book?
-    puts "Do you want to see information for another book? (y/n)"
+    puts "\n"+"Do you want to see information for another book? (y/n)"
     another = gets.strip == 'y'
   end
 
   def run
-    url = "./fixtures/available-now-list/available-now.htm"
-    books = get_books_from(url)
-    
+    puts "Loading books. Sorry, this could take a few seconds...\n"
+
+    # url = "./fixtures/available-now-list/available-now.htm"
+    url = "https://nypl.overdrive.com/collection/26060"
+    books = get_books_from(url)  
+
     loop {
       show_list(books)  
       book = select_book(books)
