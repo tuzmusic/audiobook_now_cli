@@ -10,6 +10,6 @@ gem 'pry-nav'
 # gem 'phantomjs'
 gem 'poltergeist'
 
-gem 'nokogiri', '1.6.6.2'
+gem 'nokogiri'#, '1.6.6.2'
 gem 'rspec'
 gem 'require_all'
