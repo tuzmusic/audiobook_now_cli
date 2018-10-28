@@ -3,6 +3,17 @@ require '../spec_helper'
 
 
 context 'CLI for Sorting' do
+
+  cli = CLI.new
+
+  cli.current_filters = {
+      subjects: ["Fiction", "Mystery"],
+      length: "1:30-3:00",
+      audience: "General Adult",
+      date_added:"Last 3 Months",
+      language: "English",
+    }
+
   describe 'show_filters' do
 =begin    
     it 'displays the available filters' do
@@ -29,7 +40,7 @@ context 'CLI for Sorting' do
       expect($stdout).to receive(:puts).with("4. Date Added: Last 3 Months")
       expect($stdout).to receive(:puts).with("5. Language: English")
       
-      CLI.new.show_filters
+      cli.show_filters
       
     end    
   end
@@ -47,7 +58,6 @@ context 'CLI for Sorting' do
     end    
     
     it 'asks again if the user enters an invalid number' do
-      cli = CLI.new
       allow($stdout).to receive(:puts)
       expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.)).exactly(3).times
       
@@ -63,16 +73,48 @@ context 'CLI for Sorting' do
       expect(cli.ask_for_filter_number).to eq(:date_added)     
     end    
 
-    # it '' do; end    
   end
 
   describe 'show_current(filter)' do
-    it 'accepts an argument that is a filter key' do
+
+    it 'accepts a filter key as an argument (return truthy for a correct argument and return falsy for an incorrect argument)' do
       expect(show_current(:subject)).to equal(true)
       expect(show_current(:balls)).to equal(false)
       expect(show_current("junk")).to equal(false)
     end
     
+    it 'shows the current values for the selected filter' do
+      allow($stdout).to receive(:puts)
+      expect($stdout).to receive(:puts).with(%(Current Subjects selected:))
+      expect($stdout).to receive(:puts).with(%())
+
+      cli.show_current(:subject)
+    end
+
+  end
+
+  describe 'show_available(filter)' do
+    it 'shows available values for a filter' do; expect(true).to eq(false); end
+      
+  end
+
+  describe 'add_or_remove_terms(filter)' do
+    it 'allows a user to add a term to the filter' do; expect(true).to eq(false); end
+    
+    it 'allows a user to remove a term from the filter' do; expect(true).to eq(false); end
+    
+    it 'displays the currently selected terms after a term is added' do; expect(true).to eq(false); end
+    
+    it 'displays the currently selected terms after a term is removed' do; expect(true).to eq(false); end
+    
+    it 'allows a user to re-display the list of available terms by typing "list"' do; expect(true).to eq(false); end
+    
+    it 'allows a user to re-display the list of all set filters (from Filter.selected) by typing "list filters"' do; expect(true).to eq(false); end
+    
+    it 'allows a user to exit filter selection by typing "done"' do; expect(true).to eq(false); end
+    
+    # it '' do; expect(true).to eq(false); end
+
   end
 
   describe 'Sorting by subject' do
@@ -92,21 +134,21 @@ context 'CLI for Sorting' do
       
     end
     
-    it 'allows a user to select a subject' do; end
+    it 'allows a user to select a subject' do; expect(true).to eq(false); end
     
-    it 'adds to Filter.selected when a user selects a subject' do; end
+    it 'adds to Filter.selected when a user selects a subject' do; expect(true).to eq(false); end
     
-    it 'allows a user to delete a subject from their selected list' do; end
+    it 'allows a user to delete a subject from their selected list' do; expect(true).to eq(false); end
     
-    it 'uses Filter.show_selected when a user selects or deletes a subject' do; end
+    it 'uses Filter.show_selected when a user selects or deletes a subject' do; expect(true).to eq(false); end
     
-    it 'allows a user to re-display the list of available subjects by typing "list"' do; end
+    it 'allows a user to re-display the list of available subjects by typing "list"' do; expect(true).to eq(false); end
     
     it 'allows a user to re-display the list of all set filters (from Filter.selected) by typing "list 
-    filters"' do; end
+    filters"' do; expect(true).to eq(false); end
     
-    it 'allows a user to exit subject selections by typing "done"' do; end
+    it 'allows a user to exit subject selections by typing "done"' do; expect(true).to eq(false); end
     
-    it '' do; end
+    it '' do; expect(true).to eq(false); end
   end
 end

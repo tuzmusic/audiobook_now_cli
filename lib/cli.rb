@@ -2,9 +2,21 @@ require 'pry'
 require 'active_support'
 require_relative '../config/environment.rb'
 
-  class CLI
+class CLI
 
-  def test_filters_hash
+  def titlelize(symbol)
+    symbol.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
+  end
+
+  def stringified_value(value)
+    value = value.join(', ') if value.class == Array
+    value
+  end
+
+
+
+  # calls to test_filters_hash should ultimately be refactored to Filters.current or Search.filters or search#filters or something
+  def self.test_filters_hash
     filters_hash = {
       subjects: ["Fiction", "Mystery"],
       length: "1:30-3:00",
@@ -14,7 +26,9 @@ require_relative '../config/environment.rb'
     }
   end
 
-  def filters # => array of available filters. 
+  attr_accessor :current_filters
+
+  def self.filters # => array of available filters. 
     # TO DO: this belongs in a class method on Filters
     filters_array = [
       :subjects,
@@ -25,12 +39,15 @@ require_relative '../config/environment.rb'
     ]
   end
 
+  def filters
+    CLI.filters
+  end
+
   def show_filters
-    filters.each.with_index(1) { |filter, i|
-      title = filter.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
-      value = test_filters_hash[filter]
-      value = value.join(', ') if value.class == Array
-      puts %(#{i}. #{title}: #{value})
+    CLI.filters.each.with_index(1) { |filter, i|
+      value = stringified_value(current_filters[filter]) # TO-DO: Each filter should have its own description property?
+      # value = value.join(', ') if value.class == Array
+      puts %(#{i}. #{titlelize(filter)}: #{value})
     }
   end
 
@@ -47,6 +64,8 @@ require_relative '../config/environment.rb'
     show_filters
     filter = ask_for_filter_number
     show_current(filter)
+    show_available(filter)
+    add_or_remove_terms(filter)
   end
 
 end
