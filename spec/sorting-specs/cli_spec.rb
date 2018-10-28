@@ -20,6 +20,9 @@ context 'CLI for Sorting' do
     end    
 =end    
     it 'displays the available filters, with the selected filters' do
+
+      allow($stdout).to receive(:puts)
+
       expect($stdout).to receive(:puts).with("1. Subjects: Fiction, Mystery")
       expect($stdout).to receive(:puts).with("2. Length: 1:30-3:00")
       expect($stdout).to receive(:puts).with("3. Audience: General Adult")
@@ -27,25 +30,20 @@ context 'CLI for Sorting' do
       expect($stdout).to receive(:puts).with("5. Language: English")
       
       CLI.new.run 
-=begin
-Filter categories:
-  subject
-  audience (Juvenile, Young Adult, General Adult, Mature Adult)
-  language
-  date added (last 7/14/30 days, 3/6 months)
-  --availability--
-
-=end
-    end    
-    it 'lets a user select what they want to filter by (subject, time, language)' do; 
-
-      allow($stdout).to receive(:puts)
-      expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))
-
-      # expect{test}.to output(%(Enter the number of the filter you'd like to change.)).to_stdout
-      CLI.new.ask_for_filter_number
       
     end    
+    
+    it 'lets a user select what they want to filter by (subject, time, language)' do
+      cli = CLI.new
+      allow($stdout).to receive(:puts)
+      expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))
+      
+      allow(cli).to receive(:gets).and_return('1') 
+      expect(cli.ask_for_filter_number).to equal(:subjects)     
+      allow(cli).to receive(:gets).and_return('4')      
+      expect(cli.ask_for_filter_number).to equal(:date_added)     
+    end    
+    
     # it '' do; end    
   end
 

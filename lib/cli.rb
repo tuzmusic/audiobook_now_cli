@@ -2,10 +2,9 @@ require 'pry'
 require 'active_support'
 require_relative '../config/environment.rb'
 
-# class New_CLI
   class CLI
 
-  def filters
+  def test_filters_hash
     filters_hash = {
       subjects: ["Fiction", "Mystery"],
       length: "1:30-3:00",
@@ -15,29 +14,42 @@ require_relative '../config/environment.rb'
     }
   end
 
+  def filters # => array of available filters. 
+    # TO DO: this belongs in a class method on Filters
+    filters_array = [
+      :subjects,
+      :length,
+      :audience,
+      :date_added,
+      :language,
+    ]
+  end
+
   def show_filters
-    filters.each.with_index(1) { |(key,value), i|
-      k = key.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
-     value = value.join(', ') if value.class == Array
-      puts %(#{i}. #{k}: #{value})
+    filters.each.with_index(1) { |filter, i|
+      title = filter.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
+      value = test_filters_hash[filter]
+      value = value.join(', ') if value.class == Array
+      puts %(#{i}. #{title}: #{value})
     }
   end
 
   def ask_for_filter_number
-    
+    puts %(Enter the number of the filter you'd like to change.)
+    index = gets.to_i - 1
+    filters[index]
   end
     
   def run
     show_filters
-    ask_for_filter_number
+    filter = ask_for_filter_number
   end
 
 end
 
 
 
-class Old_CLI
-# class CLI
+class C_LI
 
   def get_books_from(url)
 
@@ -97,4 +109,4 @@ end
 
 
 
-CLI.new.run
+# CLI.new.run
