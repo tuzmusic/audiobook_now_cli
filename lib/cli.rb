@@ -1,6 +1,14 @@
-require_relative '../config/environment.rb'
+# require_relative '../config/environment.rb'
 
 class CLI
+  
+def run
+  puts 'running new cli'
+end
+
+end
+
+class Old_CLI
 
   def get_books_from(url)
 
