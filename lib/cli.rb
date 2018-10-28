@@ -35,19 +35,21 @@ require_relative '../config/environment.rb'
   end
 
   def ask_for_filter_number
-    puts %(Enter the number of the filter you'd like to change.)
-    index = gets.to_i - 1
-    filters[index]
+    loop {
+      puts %(Enter the number of the filter you'd like to change.)
+      i = gets.to_i - 1
+      # binding.pry
+      return filters[i] if i >= 0 && i < filters.count  
+    }
   end
     
   def run
     show_filters
     filter = ask_for_filter_number
+    show_current(filter)
   end
 
 end
-
-
 
 class C_LI
 
@@ -106,7 +108,5 @@ class C_LI
 
   end
 end
-
-
 
 # CLI.new.run
