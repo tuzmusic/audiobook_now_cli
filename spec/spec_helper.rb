@@ -1,3 +1,5 @@
+require 'require_all'
+# require_relative '../lib'
 require_relative "../config/environment.rb"
 
 RSpec.configure do |config|

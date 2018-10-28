@@ -6,6 +6,7 @@ require 'capybara/poltergeist'
 require 'require_all'
 require 'bundler'
 
-# Bundler.require
 
-require_all 'lib'
+# require_all '../lib/*'
+require 'require_all'
+require_rel ('../lib')

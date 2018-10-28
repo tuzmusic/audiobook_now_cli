@@ -1,9 +1,9 @@
 require 'pry'
 require 'active_support'
-# require_relative '../config/environment.rb'
+require_relative '../config/environment.rb'
 
 # class New_CLI
-class CLI
+  class CLI
 
   def filters
     filters_hash = {
@@ -34,12 +34,11 @@ class CLI
 
 end
 
-CLI.new.run
 
 
-# class CLI
-=begin
 class Old_CLI
+# class CLI
+
   def get_books_from(url)
 
     list = Scraper.scrape_book_list(url) # => array of hashes, with urls
@@ -96,5 +95,6 @@ class Old_CLI
   end
 end
 
-=end
 
+
+CLI.new.run
