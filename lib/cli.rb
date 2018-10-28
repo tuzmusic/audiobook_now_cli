@@ -55,11 +55,19 @@ class CLI
     loop {
       puts %(Enter the number of the filter you'd like to change.)
       i = gets.to_i - 1
-      # binding.pry
       return filters[i] if i >= 0 && i < filters.count  
     }
   end
     
+  def show_current(filter)
+    puts %(Current #{titlelize(filter)} selected:)
+    terms = current_filters[filter]
+    terms = [terms] if terms.class != Array
+    terms.each { |term|
+      puts term
+    }
+  end
+
   def run
     show_filters
     filter = ask_for_filter_number

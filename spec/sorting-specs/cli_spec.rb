@@ -2,17 +2,23 @@ require '../spec_helper'
 # require '../../lib/cli.rb'
 
 
+current = {
+    subjects: ["Fiction", "Mystery"],
+    length: "1:30-3:00",
+    audience: "General Adult",
+    date_added:"Last 3 Months",
+    language: "English",
+  }
+cli = CLI.new
+
+cli.current_filters = {
+    subjects: ["Fiction", "Mystery"],
+    length: "1:30-3:00",
+    audience: "General Adult",
+    date_added:"Last 3 Months",
+    language: "English",
+  }
 context 'CLI for Sorting' do
-
-  cli = CLI.new
-
-  cli.current_filters = {
-      subjects: ["Fiction", "Mystery"],
-      length: "1:30-3:00",
-      audience: "General Adult",
-      date_added:"Last 3 Months",
-      language: "English",
-    }
 
   describe 'show_filters' do
 =begin    
@@ -47,7 +53,6 @@ context 'CLI for Sorting' do
   
   describe 'ask_for_filter_number' do
     it 'lets a user select what they want to filter by (subject, time, language)' do
-      cli = CLI.new
       allow($stdout).to receive(:puts)
       expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))
       
@@ -77,18 +82,21 @@ context 'CLI for Sorting' do
 
   describe 'show_current(filter)' do
 
-    it 'accepts a filter key as an argument (return truthy for a correct argument and return falsy for an incorrect argument)' do
-      expect(show_current(:subject)).to equal(true)
-      expect(show_current(:balls)).to equal(false)
-      expect(show_current("junk")).to equal(false)
-    end
-    
-    it 'shows the current values for the selected filter' do
+    it 'shows the selected filter' do
       allow($stdout).to receive(:puts)
       expect($stdout).to receive(:puts).with(%(Current Subjects selected:))
-      expect($stdout).to receive(:puts).with(%())
+      cli.show_current(:subjects)      
+    end
 
-      cli.show_current(:subject)
+    it 'shows the current values for the selected filter' do
+      allow($stdout).to receive(:puts)
+
+      expect($stdout).to receive(:puts).with(%(Fiction))
+      expect($stdout).to receive(:puts).with(%(Mystery))
+      cli.show_current(:subjects)
+      
+      expect($stdout).to receive(:puts).with(%(General Adult))
+      cli.show_current(:audience)      
     end
 
   end
