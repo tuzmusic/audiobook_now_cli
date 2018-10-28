@@ -4,23 +4,29 @@ require '../../lib/cli.rb'
 
 context 'CLI for Sorting' do
   describe 'top-level of CLI' do
-    it 'displays the current filters' do
+=begin    
+    it 'displays the available filters' do
 
-      test_str = %(Current filters:
-      1. Subjects: Fiction, Mystery
-      2. Length: 1:30-3:00
-      3. Language: English
-      )
-
-
-      # expect(STDOUT).to receive(:puts).and.include(test_str)
-
-      expect{CLI.new.run}.to output(test_str).to_stdout
+      allow($stdout).to receive(:puts)
       
-      # CLI.new.run
+      expect($stdout).to receive(:puts).with("1. Subjects:")
+      expect($stdout).to receive(:puts).with("2. Length:")
+      expect($stdout).to receive(:puts).with("3. Audience:")
+      expect($stdout).to receive(:puts).with("4. Date Added:")
+      expect($stdout).to receive(:puts).with("5. Language:")
+
+      CLI.new.run 
 
     end    
-    it 'displays the available filters' do
+=end    
+    it 'displays the available filters, with the selected filters' do
+      expect($stdout).to receive(:puts).with("1. Subjects: Fiction, Mystery")
+      expect($stdout).to receive(:puts).with("2. Length: 1:30-3:00")
+      expect($stdout).to receive(:puts).with("3. Audience: General Adult")
+      expect($stdout).to receive(:puts).with("4. Date Added: Last 3 Months")
+      expect($stdout).to receive(:puts).with("5. Language: English")
+      
+      CLI.new.run 
 =begin
 Filter categories:
   subject
@@ -31,8 +37,16 @@ Filter categories:
 
 =end
     end    
-    it 'lets a user select what they want to filter by (subject, time, language)' do; end    
-    it '' do; end    
+    it 'lets a user select what they want to filter by (subject, time, language)' do; 
+
+      allow($stdout).to receive(:puts)
+      expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))
+
+      # expect{test}.to output(%(Enter the number of the filter you'd like to change.)).to_stdout
+      CLI.new.ask_for_filter_number
+      
+    end    
+    # it '' do; end    
   end
 
   describe 'Sorting by subject' do

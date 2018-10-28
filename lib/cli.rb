@@ -1,19 +1,45 @@
-require_relative '../config/environment.rb'
+require 'pry'
+require 'active_support'
+# require_relative '../config/environment.rb'
 
-class New_CLI
+# class New_CLI
+class CLI
+
+  def filters
+    filters_hash = {
+      subjects: ["Fiction", "Mystery"],
+      length: "1:30-3:00",
+      audience: "General Adult",
+      date_added:"Last 3 Months",
+      language: "English",
+    }
+  end
+
+  def show_filters
+    filters.each.with_index(1) { |(key,value), i|
+      k = key.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
+     value = value.join(', ') if value.class == Array
+      puts %(#{i}. #{k}: #{value})
+    }
+  end
+
+  def ask_for_filter_number
+    
+  end
     
   def run
-    print  %(Current filters:
-        1. Subjects: Fiction, Mystery
-        2. Length: 1:30-3:00
-        3. Language: English
-        )
+    show_filters
+    ask_for_filter_number
   end
 
 end
 
-# class Old_CLI
-class CLI
+CLI.new.run
+
+
+# class CLI
+=begin
+class Old_CLI
   def get_books_from(url)
 
     list = Scraper.scrape_book_list(url) # => array of hashes, with urls
@@ -68,6 +94,7 @@ class CLI
     }
 
   end
-
 end
+
+=end
 
