@@ -12,13 +12,24 @@ context 'CLI for Sorting' do
       3. Language: English
       )
 
-      expect(STDOUT).to receive(:puts).with(test_str)
-    
-      CLI.new.run
+
+      # expect(STDOUT).to receive(:puts).and.include(test_str)
+
+      expect{CLI.new.run}.to output(test_str).to_stdout
+      
+      # CLI.new.run
 
     end    
     it 'displays the available filters' do
-      
+=begin
+Filter categories:
+  subject
+  audience (Juvenile, Young Adult, General Adult, Mature Adult)
+  language
+  date added (last 7/14/30 days, 3/6 months)
+  --availability--
+
+=end
     end    
     it 'lets a user select what they want to filter by (subject, time, language)' do; end    
     it '' do; end    

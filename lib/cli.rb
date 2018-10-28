@@ -1,15 +1,19 @@
-# require_relative '../config/environment.rb'
+require_relative '../config/environment.rb'
 
+class New_CLI
+    
+  def run
+    print  %(Current filters:
+        1. Subjects: Fiction, Mystery
+        2. Length: 1:30-3:00
+        3. Language: English
+        )
+  end
+
+end
+
+# class Old_CLI
 class CLI
-  
-def run
-  puts 'running new cli'
-end
-
-end
-
-class Old_CLI
-
   def get_books_from(url)
 
     list = Scraper.scrape_book_list(url) # => array of hashes, with urls
