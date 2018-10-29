@@ -46,9 +46,8 @@ class CLI
   def show_filters
     # binding.pry
     CLI.filters.each.with_index(1) { |filter, i|
-      value = stringified_value(current_filters[filter]) # TO-DO: Each filter should have its own description property?
-      value = value.join(', ') if value.class == Array
-      puts %(#{i}. #{filter.titlelize}: #{value})
+      value = [current_filters[filter]] # TO-DO: Each filter should have its own description property?
+      puts %(#{i}. #{filter.titlelize}: #{[value].join(', ')})
     }
   end
 
@@ -69,10 +68,8 @@ class CLI
   def show_available(filter)
     puts %(Available #{filter.titlelize}:)
     all = [all_terms[filter]].flatten
-    current = [current_filters[filter]]
-    all.each { |term| 
-      puts term if !current.flatten.include?(term)
-    }
+    current = [current_filters[filter]].flatten
+    all.each { |term| puts term if !current.include?(term) }
   end
 
   def run
