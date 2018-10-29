@@ -2,18 +2,18 @@ require 'pry'
 require 'active_support'
 require_relative '../config/environment.rb'
 
-class CLI
-
-  def titlelize(symbol)
-    symbol.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
+class Symbol # titleize extension
+  def titlelize
+    self.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
   end
+end
+
+class CLI
 
   def stringified_value(value)
     value = value.join(', ') if value.class == Array
     value
   end
-
-
 
   # calls to test_filters_hash should ultimately be refactored to Filters.current or Search.filters or search#filters or something
   def self.test_filters_hash
@@ -26,7 +26,7 @@ class CLI
     }
   end
 
-  attr_accessor :current_filters
+  attr_accessor :current_filters, :all_terms
 
   def self.filters # => array of available filters. 
     # TO DO: this belongs in a class method on Filters
@@ -44,10 +44,11 @@ class CLI
   end
 
   def show_filters
+    # binding.pry
     CLI.filters.each.with_index(1) { |filter, i|
       value = stringified_value(current_filters[filter]) # TO-DO: Each filter should have its own description property?
-      # value = value.join(', ') if value.class == Array
-      puts %(#{i}. #{titlelize(filter)}: #{value})
+      value = value.join(', ') if value.class == Array
+      puts %(#{i}. #{filter.titlelize}: #{value})
     }
   end
 
@@ -60,20 +61,46 @@ class CLI
   end
     
   def show_current(filter)
-    puts %(Current #{titlelize(filter)} selected:)
-    terms = current_filters[filter]
-    terms = [terms] if terms.class != Array
-    terms.each { |term|
-      puts term
+    puts %(Current #{filter.titlelize} selected:)
+    terms = [current_filters[filter]].flatten
+    terms.each { |term| puts term }
+  end
+
+  def show_available(filter)
+    puts %(Available #{filter.titlelize}:)
+    all = [all_terms[filter]].flatten
+    current = [current_filters[filter]]
+    all.each { |term| 
+      puts term if !current.flatten.include?(term)
     }
   end
 
   def run
+    set_backup_values
     show_filters
     filter = ask_for_filter_number
     show_current(filter)
     show_available(filter)
     add_or_remove_terms(filter)
+  end
+
+  def set_backup_values
+    if current_filters == nil
+      puts "setting backup filters"
+      self.current_filters = {
+        subjects: ["Fiction", "Mystery"],
+        length: "1:30-3:00",
+        audience: "General Adult",
+        date_added:"Last 3 Months",
+        language: "English",
+      }
+    end
+    if all_terms == nil 
+      self.all_terms = {
+        subjects: ["Non-fiction", "Biography", "Movies and Television", "Fiction", "Mystery"],
+        audience: ["General Adult", "Juvenile", "Young Adult", "Mature Adult",]
+      }
+    end
   end
 
 end

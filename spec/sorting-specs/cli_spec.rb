@@ -102,12 +102,53 @@ context 'CLI for Sorting' do
   end
 
   describe 'show_available(filter)' do
-    it 'shows available values for a filter' do; expect(true).to eq(false); end
+    
+    subject2 = "Non-fiction"
+    subject3 = "Biography"
+    subject4 = "Movies and Television"
+    
+    aud1 = "Juvenile"
+    aud2 = "Young Adult"
+    aud3 = "Mature Adult"
+    
+    avail_terms = {
+      subjects: [subject2, subject3, subject4],
+      audience: [aud1, aud2, aud3]
+    }
+
+    all_terms = {
+      subjects: [subject2, subject3, subject4, current[:subjects][0], current[:subjects][1]],
+      audience: [aud1, aud2, aud3, current[:audience]]
+    }
+
+    it 'shows available values for a filter' do
+      allow($stdout).to receive(:puts)
+      
+      cli.all_terms = avail_terms
+      expect($stdout).to receive(:puts).with(subject2)
+      expect($stdout).to receive(:puts).with(subject3)
+      expect($stdout).to receive(:puts).with(subject4)
+      cli.show_available(:subjects)
+      
+      expect($stdout).to receive(:puts).with(aud1)
+      expect($stdout).to receive(:puts).with(aud2)
+      expect($stdout).to receive(:puts).with(aud3)
+      cli.show_available(:audience)
+    end
+
+    it %(doesn't show filters that are currently selected) do
+      cli.all_terms = all_terms
+      expect($stdout).to_not receive(:puts).with(current[:subjects][0])
+      expect($stdout).to_not receive(:puts).with(current[:subjects][1])
+      cli.show_available(:subjects)
+
+      expect($stdout).to_not receive(:puts).with(current[:audience])
+      cli.show_available(:audience)
+    end
       
   end
 
   describe 'add_or_remove_terms(filter)' do
-    it 'allows a user to add a term to the filter' do; expect(true).to eq(false); end
     
     it 'allows a user to remove a term from the filter' do; expect(true).to eq(false); end
     
