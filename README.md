@@ -10,15 +10,18 @@ In upcoming versions of the program, you'll also be able to search different lib
 ## Installation:
 
 1. Open a terminal and paste in the following command to download the files:
-```git clone git@github.com:tuzmusic/audiobook_now_cli.git
+```bash
+git clone git@github.com:tuzmusic/audiobook_now_cli.git
 ```
 
 2. Paste in the following command to open the newly created directory
-```cd audiobook_now_cli
+```bash
+cd audiobook_now_cli
 ```
 
 3. Run the program by pasting in the following command
-```ruby bin/audiobook-now
+```bash
+ruby bin/audiobook-now
 ```
 
 ## License:
