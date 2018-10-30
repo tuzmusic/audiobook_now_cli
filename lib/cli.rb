@@ -6,13 +6,11 @@ class CLI
 
     list = Scraper.scrape_book_list(url) # => array of hashes, with urls
     book_urls = list.map { |book| book[:url] }
-    # book_hashes = 
     book_urls.each{ |url| 
       hash = Scraper.scrape_book_page(url)
       Book.create_from_hash(hash)
       puts "#{Book.all.count}. #{Book.all.last.listing}"      
     }
-    # book_hashes.each { |hash| Book.create_from_hash(hash) } 
   end
 
   def show_list
