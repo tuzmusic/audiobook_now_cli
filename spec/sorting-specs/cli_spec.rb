@@ -93,14 +93,13 @@ context 'CLI for Sorting' do
     it 'shows the current values for the selected filter' do
       allow($stdout).to receive(:puts)
 
-      expect($stdout).to receive(:puts).with(%(Fiction))
-      expect($stdout).to receive(:puts).with(%(Mystery))
+      expect($stdout).to receive(:puts).with(%(1. Fiction))
+      expect($stdout).to receive(:puts).with(%(2. Mystery))
       cli.show_current(:subjects)
       
-      expect($stdout).to receive(:puts).with(%(General Adult))
+      expect($stdout).to receive(:puts).with(%(1. General Adult))
       cli.show_current(:audience)      
     end
-
   end
 
   describe 'available_terms_for(filter)' do
@@ -152,20 +151,20 @@ context 'CLI for Sorting' do
       expect($stdout).to_not receive(:puts).with(current[:audience])
       cli.add_or_remove_terms(:audience)
     end
-      
-
-    it 'selects a filter by number' do
+    
+    it 'allows a user to add a term from the filter using "add (number)"' do
       allow($stdout).to receive(:puts)
-      # expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))
-      
+      expect($stdout).to receive(:puts).with(%(To add from available terms, enter "add " and the number . Ex. "add 1" to add "Non-fiction"))
+
       allow(cli).to receive(:gets).and_return('1') 
+
+
+      cli.add_or_remove_terms(:subjects)
     end
 
-    it 'allows a user to add a term from the filter' do; expect(true).to eq(false); end
-
-    it 'allows a user to remove a term from the filter' do; expect(true).to eq(false); end
-    
     it 'displays the currently selected terms after a term is added' do; expect(true).to eq(false); end
+    
+    it 'allows a user to remove a term from the filter' do; expect(true).to eq(false); end
     
     it 'displays the currently selected terms after a term is removed' do; expect(true).to eq(false); end
     

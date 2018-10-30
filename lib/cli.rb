@@ -61,7 +61,7 @@ class CLI
   def show_current(filter)
     puts %(Current #{filter.titlelize} selected:)
     terms = [current_filters[filter]].flatten
-    terms.each { |term| puts term }
+    terms.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
   end
 
   def available_terms_for(filter)
@@ -75,6 +75,8 @@ class CLI
     available = available_terms_for(filter)
     puts %(Available #{filter.titlelize}:)
     available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    # binding.pry
+    puts %(To add from available terms, enter "add " and the number . Ex. "add 1" to add "#{available[0]}")
     
   end
 
