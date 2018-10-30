@@ -1,7 +1,6 @@
 require '../spec_helper'
 # require '../../lib/cli.rb'
 
-
 current = {
     subjects: ["Fiction", "Mystery"],
     length: "1:30-3:00",
@@ -11,6 +10,24 @@ current = {
   }
 cli = CLI.new
 
+subject2 = "Non-fiction"
+subject3 = "Biography"
+subject4 = "Movies and Television"
+
+aud1 = "Juvenile"
+aud2 = "Young Adult"
+aud3 = "Mature Adult"
+
+avail_terms = {
+  subjects: [subject2, subject3, subject4],
+  audience: [aud1, aud2, aud3]
+}
+
+all_terms = {
+  subjects: [subject2, subject3, subject4, "Fiction", "Mystery"],
+  audience: [aud1, aud2, aud3, "General Adult"]
+}
+
 cli.current_filters = {
     subjects: ["Fiction", "Mystery"],
     length: "1:30-3:00",
@@ -18,24 +35,9 @@ cli.current_filters = {
     date_added:"Last 3 Months",
     language: "English",
   }
+
 context 'CLI for Sorting' do
-
   describe 'show_filters' do
-=begin    
-    it 'displays the available filters' do
-
-      allow($stdout).to receive(:puts)
-      
-      expect($stdout).to receive(:puts).with("1. Subjects:")
-      expect($stdout).to receive(:puts).with("2. Length:")
-      expect($stdout).to receive(:puts).with("3. Audience:")
-      expect($stdout).to receive(:puts).with("4. Date Added:")
-      expect($stdout).to receive(:puts).with("5. Language:")
-
-      CLI.new.run 
-
-    end    
-=end    
     it 'displays the available filters, with the selected filters' do
 
       allow($stdout).to receive(:puts)
@@ -103,36 +105,18 @@ context 'CLI for Sorting' do
 
   describe 'show_available(filter)' do
     
-    subject2 = "Non-fiction"
-    subject3 = "Biography"
-    subject4 = "Movies and Television"
-    
-    aud1 = "Juvenile"
-    aud2 = "Young Adult"
-    aud3 = "Mature Adult"
-    
-    avail_terms = {
-      subjects: [subject2, subject3, subject4],
-      audience: [aud1, aud2, aud3]
-    }
-
-    all_terms = {
-      subjects: [subject2, subject3, subject4, current[:subjects][0], current[:subjects][1]],
-      audience: [aud1, aud2, aud3, current[:audience]]
-    }
-
     it 'shows available values for a filter' do
       allow($stdout).to receive(:puts)
       
-      cli.all_terms = avail_terms
-      expect($stdout).to receive(:puts).with(subject2)
-      expect($stdout).to receive(:puts).with(subject3)
-      expect($stdout).to receive(:puts).with(subject4)
-      cli.show_available(:subjects)
-      
-      expect($stdout).to receive(:puts).with(aud1)
-      expect($stdout).to receive(:puts).with(aud2)
-      expect($stdout).to receive(:puts).with(aud3)
+      cli.all_terms = all_terms
+      expect($stdout).to receive(:puts).with("1. "+subject2)
+      expect($stdout).to receive(:puts).with("2. "+subject3)
+      expect($stdout).to receive(:puts).with("3. "+subject4)
+      cli.show_available(:subjects) 
+       
+      expect($stdout).to receive(:puts).with("1. "+aud1)
+      expect($stdout).to receive(:puts).with("2. "+aud2)
+      expect($stdout).to receive(:puts).with("3. "+aud3)
       cli.show_available(:audience)
     end
 
@@ -150,6 +134,12 @@ context 'CLI for Sorting' do
 
   describe 'add_or_remove_terms(filter)' do
     
+    it 'selects a filter by number' do
+      
+    end
+
+    it 'allows a user to add a term from the filter' do; expect(true).to eq(false); end
+
     it 'allows a user to remove a term from the filter' do; expect(true).to eq(false); end
     
     it 'displays the currently selected terms after a term is added' do; expect(true).to eq(false); end
