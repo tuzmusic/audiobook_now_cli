@@ -64,15 +64,15 @@ class CLI
     terms.each { |term| puts term }
   end
 
-  def show_available(filter)
-    puts %(Available #{filter.titlelize}:)
+  def available_terms_for(filter)
     all = [all_terms[filter]].flatten
     current = [current_filters[filter]].flatten
     available = all.select { |term| !current.include?(term)}
-    available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
   end
-
+  
   def add_or_remove_terms(filter)
+    # puts %(Available #{filter.titlelize}:)
+    # available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
     
   end
 
