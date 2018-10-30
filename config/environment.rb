@@ -8,4 +8,8 @@ require 'bundler'
 
 # Bundler.require
 
-require_all 'lib'
+# require_all 'lib'
+
+require_relative '../lib/cli.rb'
+require_relative '../lib/book.rb'
+require_relative '../lib/scraper.rb'
