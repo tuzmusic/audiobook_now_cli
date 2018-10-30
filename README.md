@@ -1,4 +1,5 @@
-# Audiobook Now - find the perfect audiobook for your next road trip.
+# Audiobook Now
+## Find the perfect audiobook for your next road trip.
 
 In its basic state, this ruby program shows you the list of audiobooks available for download at the New York Public library.
 
