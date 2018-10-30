@@ -6,7 +6,7 @@ You can pick a book from the list to get more information about that book, inclu
 
 In upcoming versions of the program, you'll also be able to search different libraries (besides the NYPL), see more books (beyond the first page presented when clicking into "Available Audiobooks"), and sort books by subject or author, or, more important (because the website doesn't let you do this), by length!
 
-## INSTALLATION:
+## Installation:
 
 1. Open a terminal and paste in the following command to download the files":
 git clone git@github.com:tuzmusic/audiobook_now_cli.git
@@ -17,6 +17,6 @@ cd audiobook_now_cli
 3. Run the program by pasting in the following command
 ruby bin/audiobook-now
 
-## LICENSE:
+## License:
 
 https://opensource.org/licenses/MIT
