@@ -22,7 +22,7 @@ class CLI
     loop {
       puts "\n"+"Enter the number for a book you'd like to know more about."
       num = gets.strip.to_i 
-      return Book.all[num - 1] if num > 0 && num <= Book.all.count  # 'return' breaks the loop. it's necessary!
+      return Book.all[num - 1] if num.between?(1, Book.all.count)  # 'return' breaks the loop. it's necessary!
     }    
   end
 
@@ -45,7 +45,7 @@ class CLI
     puts "\n"+"Here are some audiobooks currently available for download at NYPL:"+"\n\n"
     puts "Loading books..."+"\n\n"
 
-    get_books_from(url)  # populates Book.all 
+    get_books_from(url)  # populates Book.all, and lists each Book as it's created. 
 
     loop {
       show_info_for(select_book)
