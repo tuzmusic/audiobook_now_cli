@@ -103,35 +103,6 @@ context 'CLI for Sorting' do
 
   end
 
-  # describe 'show_available(filter)' do
-    
-  #   it 'shows available values for a filter' do
-  #     allow($stdout).to receive(:puts)
-      
-  #     cli.all_terms = all_terms
-  #     expect($stdout).to receive(:puts).with("1. "+subject2)
-  #     expect($stdout).to receive(:puts).with("2. "+subject3)
-  #     expect($stdout).to receive(:puts).with("3. "+subject4)
-  #     cli.show_available(:subjects) 
-       
-  #     expect($stdout).to receive(:puts).with("1. "+aud1)
-  #     expect($stdout).to receive(:puts).with("2. "+aud2)
-  #     expect($stdout).to receive(:puts).with("3. "+aud3)
-  #     cli.show_available(:audience)
-  #   end
-
-  #   it %(doesn't show filters that are currently selected) do
-  #     cli.all_terms = all_terms
-  #     expect($stdout).to_not receive(:puts).with(current[:subjects][0])
-  #     expect($stdout).to_not receive(:puts).with(current[:subjects][1])
-  #     cli.show_available(:subjects)
-
-  #     expect($stdout).to_not receive(:puts).with(current[:audience])
-  #     cli.show_available(:audience)
-  #   end
-      
-  # end
-
   describe 'available_terms_for(filter)' do
     
     cli.all_terms = all_terms
@@ -157,6 +128,32 @@ context 'CLI for Sorting' do
 
   describe 'add_or_remove_terms(filter)' do
     
+    it 'displays the avialable filters' do
+      allow($stdout).to receive(:puts)
+      
+      cli.all_terms = all_terms
+      expect($stdout).to receive(:puts).with("1. "+subject2)
+      expect($stdout).to receive(:puts).with("2. "+subject3)
+      expect($stdout).to receive(:puts).with("3. "+subject4)
+      cli.add_or_remove_terms(:subjects) 
+       
+      expect($stdout).to receive(:puts).with("1. "+aud1)
+      expect($stdout).to receive(:puts).with("2. "+aud2)
+      expect($stdout).to receive(:puts).with("3. "+aud3)
+      cli.add_or_remove_terms(:audience)
+    end
+
+    it %(doesn't show filters that are currently selected) do
+      cli.all_terms = all_terms
+      expect($stdout).to_not receive(:puts).with(current[:subjects][0])
+      expect($stdout).to_not receive(:puts).with(current[:subjects][1])
+      cli.add_or_remove_terms(:subjects)
+
+      expect($stdout).to_not receive(:puts).with(current[:audience])
+      cli.add_or_remove_terms(:audience)
+    end
+      
+
     it 'selects a filter by number' do
       allow($stdout).to receive(:puts)
       # expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))

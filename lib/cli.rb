@@ -71,8 +71,10 @@ class CLI
   end
   
   def add_or_remove_terms(filter)
-    # puts %(Available #{filter.titlelize}:)
-    # available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    # show available filters
+    available = available_terms_for(filter)
+    puts %(Available #{filter.titlelize}:)
+    available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
     
   end
 
@@ -81,7 +83,7 @@ class CLI
     show_filters
     filter = ask_for_filter_number
     show_current(filter)
-    show_available(filter)
+    # show_available(filter)
     add_or_remove_terms(filter)
   end
 
