@@ -1,7 +1,3 @@
-require 'pry'
-require 'active_support'
-require_relative '../config/environment.rb'
-
 class Symbol # titleize extension
   def titlelize
     self.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
@@ -44,8 +40,8 @@ class CLI
   end
 
   def show_all_filters
-    CLI.filters.each.with_index(1) { |filter, i|
-      value = [current_filters[filter]] # TO-DO: Each filter should have its own description property?
+    Filter.all_current.each.with_index(1) { |(filter, terms), i|
+      value = [terms] # TO-DO: Each filter should have its own description property?
       puts %(#{i}. #{filter.titlelize}: #{[value].join(', ')})
     }
   end
@@ -54,7 +50,7 @@ class CLI
     loop {
       puts %(Enter the number of the filter you'd like to change.)
       i = gets.to_i - 1
-      return filters[i] if i >= 0 && i < filters.count  
+      return Filter.all_current.keys[i] if i >= 0 && i < Filter.all_current.keys.count  
     }
   end
     

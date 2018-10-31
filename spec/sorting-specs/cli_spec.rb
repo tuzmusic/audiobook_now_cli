@@ -1,21 +1,18 @@
 require '../spec_helper'
-# require '../../lib/cli.rb'
-
 
 context 'CLI for Sorting' do
   cli = CLI.new
   current = {}
 
-  before do
+  before do 
     current = {
-        subjects: ["Fiction", "Mystery"],
-        length: "1:30-3:00",
-        audience: "General Adult",
-        date_added:"Last 3 Months",
-        language: "English",
-      }
-    cli = CLI.new
-    
+      subjects: ["Fiction", "Mystery"],
+      length: "1:30-3:00",
+      audience: "General Adult",
+      date_added:"Last 3 Months",
+      language: "English",
+    }
+
     avail_terms = {
       subjects: ["Non-fiction", "Biography", "Movies and Television"],
       audience: ["Juvenile", "Young Adult", "Mature Adult"]
@@ -25,18 +22,18 @@ context 'CLI for Sorting' do
       subjects: ["Non-fiction", "Biography", "Movies and Television", "Fiction", "Mystery"],
       audience: ["Juvenile", "Young Adult", "Mature Adult", "General Adult"]
     }
-
+    
+    # CLI class setup
+    cli = CLI.new
+    
     cli.all_terms = all_terms
+    cli.current_filters = current
 
-    cli.current_filters = {
-        subjects: ["Fiction", "Mystery"],
-        length: "1:30-3:00",
-        audience: "General Adult",
-        date_added:"Last 3 Months",
-        language: "English",
-      }
+    # Filter class setup
+    Filter.all_current = current
 
-      allow($stdout).to receive(:puts)
+    # test setup
+    allow($stdout).to receive(:puts)
   end
 
   describe 'show_all_filters' do
@@ -144,7 +141,7 @@ context 'CLI for Sorting' do
       cli.add_or_remove_terms(:subjects)
     end
 
-    xit 'allows a user to add a term from the filter using "add (number)"' do
+    it 'allows a user to add a term from the filter using "add (number)"' do
       allow(cli).to receive(:gets).and_return('add 1') 
       expect(cli.current_filters[:subjects]).to include("Non-fiction")
       cli.add_or_remove_terms(:subjects)
@@ -166,7 +163,7 @@ context 'CLI for Sorting' do
       cli.add_or_remove_terms(:subjects)
     end
 
-    xit 'allows a user to remove a term from the filter using "remove (number)"' do
+    it 'allows a user to remove a term from the filter using "remove (number)"' do
       allow(cli).to receive(:gets).and_return('remove 1') 
       expect(cli.current_filters[:subjects]).to_not include("Fiction")
       cli.add_or_remove_terms(:subjects)
