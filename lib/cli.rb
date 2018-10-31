@@ -59,44 +59,67 @@ class CLI
   end
     
   def show_current(filter)
+    current = [current_filters[filter]].flatten
     puts %(Current #{filter.titlelize} selected:)
-    terms = [current_filters[filter]].flatten
-    terms.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    current.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
   end
 
-  def available_terms_for(filter)
+  def available_terms_for(filter) # => available terms
     all = [all_terms[filter]].flatten
     current = [current_filters[filter]].flatten
-    available = all.select { |term| !current.include?(term)}
+    all.select { |term| !current.include?(term)} 
   end
   
-  def add_or_remove_terms(filter)
-    # show available filters
+  def show_available(filter) # => available   
     available = available_terms_for(filter)
     puts %(Available #{filter.titlelize}:)
-    available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    available.each.with_index(1) { |term, i| puts "#{i}. #{term}" } 
+  end
 
-    # ask for input
+  def show_current_and_available(filter)
+    show_current(filter)
+    show_available(filter)
+  end
+
+  def add_or_remove_terms(filter)
+    available = available_terms_for(filter)
+    # binding.pry
+    # show options
     puts %(To add from available terms, enter "add " and the number . Ex. "add 1" to add "#{available[0]}")
+    puts %(To remove a current term, enter "remove " and the number . Ex. "remove 1" to remove "#{current_filters[filter][0]}")
+    puts %(To show the current and available subjects, enter "list")
+    puts %(To return to the list of all currently selected filters, enter "exit")
+    
+    # ask for input
     input = gets
-    # puts input
     return if !input
-    binding.pry if input == 'add 1'
+
     terms = input.split(' ')
     arg = terms[0]
     num = (terms[1].to_i - 1) if terms[1]
+    
     case arg
+    when 'exit'  
+      # return from function back to upper prompt
     when 'add'
-      # binding.pry
-      current_filters[filter] << available[num]    
+      current_filters[filter] << available[num]
+      show_current_and_available(filter)
+    when 'remove'
+      current_filters[filter].delete_at(num)
+      show_current_and_available(filter)
+    when 'list'
+      show_current_and_available(filter)
+    else  
+      # invalid input
     end
+
   end
 
   def run
     set_backup_values
     show_filters
     filter = ask_for_filter_number
-    show_current(filter)
+    show_current_and_available(filter)
     add_or_remove_terms(filter)
   end
 
