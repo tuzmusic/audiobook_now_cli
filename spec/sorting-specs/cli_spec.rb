@@ -5,6 +5,7 @@ require '../spec_helper'
 context 'CLI for Sorting' do
   cli = CLI.new
   current = {}
+
   before do
     current = {
         subjects: ["Fiction", "Mystery"],
@@ -34,27 +35,24 @@ context 'CLI for Sorting' do
         date_added:"Last 3 Months",
         language: "English",
       }
+
+      allow($stdout).to receive(:puts)
   end
 
   describe 'show_filters' do
     it 'displays the available filters, with the selected filters' do
-
-      allow($stdout).to receive(:puts)
-
       expect($stdout).to receive(:puts).with("1. Subjects: Fiction, Mystery")
       expect($stdout).to receive(:puts).with("2. Length: 1:30-3:00")
       expect($stdout).to receive(:puts).with("3. Audience: General Adult")
       expect($stdout).to receive(:puts).with("4. Date Added: Last 3 Months")
       expect($stdout).to receive(:puts).with("5. Language: English")
       
-      cli.show_filters
-      
+      cli.show_filters    
     end    
   end
   
   describe 'ask_for_filter_number' do
     it 'lets a user select what they want to filter by (subject, time, language)' do
-      allow($stdout).to receive(:puts)
       expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.))
       
       allow(cli).to receive(:gets).and_return('1') 
@@ -64,7 +62,6 @@ context 'CLI for Sorting' do
     end    
     
     it 'asks again if the user enters an invalid number' do
-      allow($stdout).to receive(:puts)
       expect($stdout).to receive(:puts).with(%(Enter the number of the filter you'd like to change.)).exactly(3).times
       
       # NOTE: I'm not sure why I have to call the method 3 times. (otherwise the 'expect' above only gets 3 times). 
@@ -78,20 +75,15 @@ context 'CLI for Sorting' do
       expect(cli.ask_for_filter_number).to eq(:date_added)     
       expect(cli.ask_for_filter_number).to eq(:date_added)     
     end    
-
   end
 
   describe 'show_current(filter)' do
-
-    it 'shows the selected filter' do
-      allow($stdout).to receive(:puts)
+    it 'shows the selected filter' do      
       expect($stdout).to receive(:puts).with(%(Current Subjects selected:))
       cli.show_current(:subjects)      
     end
 
     it 'shows the current values for the selected filter' do
-      allow($stdout).to receive(:puts)
-
       expect($stdout).to receive(:puts).with(%(1. Fiction))
       expect($stdout).to receive(:puts).with(%(2. Mystery))
       cli.show_current(:subjects)
@@ -103,8 +95,7 @@ context 'CLI for Sorting' do
 
   describe 'available_terms_for(filter)' do
     
-    it 'returns available values for a filter' do
-      
+    it 'returns available values for a filter' do   
       expect(cli.available_terms_for(:subjects) ).to include("Non-fiction")
       expect(cli.available_terms_for(:subjects) ).to include("Biography")
       expect(cli.available_terms_for(:subjects) ).to include("Movies and Television")
@@ -125,8 +116,6 @@ context 'CLI for Sorting' do
   describe 'add_or_remove_terms(filter)' do
     
     it 'displays the avialable filters' do
-      allow($stdout).to receive(:puts)
-      
       expect($stdout).to receive(:puts).with("1. Non-fiction")
       expect($stdout).to receive(:puts).with("2. Biography")
       expect($stdout).to receive(:puts).with("3. Movies and Television")
@@ -147,8 +136,7 @@ context 'CLI for Sorting' do
       cli.add_or_remove_terms(:audience)
     end
     
-    it 'instructs the user to add a term from the filter using "add (number)"' do
-      allow($stdout).to receive(:puts)
+    it 'instructs the user to add a term from the filter using "add (number)"' do      
       allow(cli).to receive(:gets)
       expect($stdout).to receive(:puts).with(%(To add from available terms, enter "add " and the number . Ex. "add 1" to add "Non-fiction"))
       expect(cli).to receive(:gets).exactly(1).times
@@ -156,16 +144,12 @@ context 'CLI for Sorting' do
     end
 
     it 'allows a user to add a term from the filter using "add (number)"' do
-      allow($stdout).to receive(:puts)
       allow(cli).to receive(:gets).and_return('add 1') 
       expect(cli.current_filters[:subjects]).to include("Non-fiction")
       cli.add_or_remove_terms(:subjects)
     end
     
     it 'displays the currently selected terms after a term is added' do
-      cli.current_filters[:subjects] = ["Fiction", "Mystery"]
-      allow($stdout).to receive(:puts)
-
       allow(cli).to receive(:gets).and_return('add 1')
       expect($stdout).to receive(:puts).with("1. Fiction")
       expect($stdout).to receive(:puts).with("2. Mystery")
@@ -175,7 +159,6 @@ context 'CLI for Sorting' do
     end
     
     it 'instructs the user to remove a term from the filter using "remove (number)"' do
-      allow($stdout).to receive(:puts)
       allow(cli).to receive(:gets)
       expect($stdout).to receive(:puts).with(%(To remove a current term, enter "remove " and the number . Ex. "remove 1" to remove "Fiction"))
       expect(cli).to receive(:gets).exactly(1).times
@@ -183,52 +166,43 @@ context 'CLI for Sorting' do
     end
 
     it 'allows a user to remove a term from the filter using "remove (number)"' do
-      allow($stdout).to receive(:puts)
       allow(cli).to receive(:gets).and_return('remove 1') 
       expect(cli.current_filters[:subjects]).to_not include("Fiction")
       cli.add_or_remove_terms(:subjects)
     end
     
-    it 'displays the currently selected terms after a term is removed' do; expect(true).to eq(false); end
-    
-    it 'allows a user to re-display the list of available terms by typing "list"' do; expect(true).to eq(false); end
-    
-    it 'allows a user to re-display the list of all set filters (from Filter.selected) by typing "list filters"' do; expect(true).to eq(false); end
-    
-    it 'allows a user to exit filter selection by typing "done"' do; expect(true).to eq(false); end
-    
-    # it '' do; expect(true).to eq(false); end
-
-  end
-
-  describe 'Sorting by subject' do
-
-    it 'displays a list of available subjects to sort by' do
-     
-      allow($stdout).to receive(:puts)
-
-      expect($stdout).to receive(:puts).with("Mystery")
-      expect($stdout).to receive(:puts).with("Non-fiction")
-      expect($stdout).to receive(:puts).with("Biography")
-      expect($stdout).to receive(:puts).with("Movies and Television")
-      
+    it 'displays the currently selected terms after a term is removed' do
+      allow(cli).to receive(:gets).and_return('remove 1') 
+      expect($stdout).to receive(:puts).with("1. Mystery")
+      cli.add_or_remove_terms(:subjects)            
     end
     
-    it 'allows a user to select a subject' do; expect(true).to eq(false); end
+    it 'allows a user to re-display the list of available terms by typing "list"' do
+      expect($stdout).to receive(:puts).with(%(To show the current and available subjects, enter "list"))
+      allow(cli).to receive(:gets).and_return('list') 
+      expect($stdout).to receive(:puts).with("Current subjects:")
+      expect($stdout).to receive(:puts).with("1. Fiction")
+      expect($stdout).to receive(:puts).with("2. Mystery")
+      expect($stdout).to receive(:puts).with("Available subjects:")
+      expect($stdout).to receive(:puts).with("1. Non-fiction")
+      expect($stdout).to receive(:puts).with("2. Biography")
+      expect($stdout).to receive(:puts).with("3. Movies and Television")
+      cli.add_or_remove_terms(:subjects)                
+    end
     
-    it 'adds to Filter.selected when a user selects a subject' do; expect(true).to eq(false); end
+    it 'allows a user to re-display the list of all set filters by typing "exit"' do
+      expect($stdout).to receive(:puts).with(%(To return to the list of all currently selected filters, enter "exit"))
+      allow(cli).to receive(:gets).and_return('exit') 
+      
+      expect($stdout).to receive(:puts).with("1. Subjects: Fiction, Mystery")
+      expect($stdout).to receive(:puts).with("2. Length: 1:30-3:00")
+      expect($stdout).to receive(:puts).with("3. Audience: General Adult")
+      expect($stdout).to receive(:puts).with("4. Date Added: Last 3 Months")
+      expect($stdout).to receive(:puts).with("5. Language: English")
+ 
+      cli.add_or_remove_terms(:subjects)                
+    end
     
-    it 'allows a user to delete a subject from their selected list' do; expect(true).to eq(false); end
-    
-    it 'uses Filter.show_selected when a user selects or deletes a subject' do; expect(true).to eq(false); end
-    
-    it 'allows a user to re-display the list of available subjects by typing "list"' do; expect(true).to eq(false); end
-    
-    it 'allows a user to re-display the list of all set filters (from Filter.selected) by typing "list 
-    filters"' do; expect(true).to eq(false); end
-    
-    it 'allows a user to exit subject selections by typing "done"' do; expect(true).to eq(false); end
-    
-    it '' do; expect(true).to eq(false); end
+    # it '' do; expect(true).to eq(false); end
   end
 end
