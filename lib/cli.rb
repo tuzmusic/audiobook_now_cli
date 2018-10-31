@@ -1,88 +1,50 @@
-class Symbol # titleize extension
-  def titlelize
-    self.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
-  end
-end
+
 
 class CLI
 
-  def stringified_value(value)
-    value = value.join(', ') if value.class == Array
-    value
-  end
+  attr_accessor :working_filter, :current_filters, :all_terms
 
-  # calls to test_filters_hash should ultimately be refactored to Filters.current or Search.filters or search#filters or something
-  def self.test_filters_hash
-    filters_hash = {
-      subjects: ["Fiction", "Mystery"],
-      length: "1:30-3:00",
-      audience: "General Adult",
-      date_added:"Last 3 Months",
-      language: "English",
+  def show_all_active_filters
+    Filter.all_active.each.with_index(1) { |filter, i|
+      value = [filter.selected_terms] # TO-DO: Each filter should have its own description property?
+      puts %(#{i}. #{filter.name.titleize}: #{[value].join(', ')})
     }
   end
 
-  attr_accessor :current_filters, :all_terms
-
-  def self.filters # => array of available filters. 
-    # TO DO: this belongs in a class method on Filters
-    filters_array = [
-      :subjects,
-      :length,
-      :audience,
-      :date_added,
-      :language,
-    ]
-  end
-
-  def filters
-    CLI.filters
-  end
-
-  def show_all_filters
-    Filter.all_current.each.with_index(1) { |(filter, terms), i|
-      value = [terms] # TO-DO: Each filter should have its own description property?
-      puts %(#{i}. #{filter.titlelize}: #{[value].join(', ')})
-    }
-  end
-
-  def ask_for_filter_number
-    loop {
+  def ask_for_filter_number # => filter key (symbol)
+    # DANGER: This assumes we are displaying the keys in the same order that they're being iterated. This is probably WRONG. But we'll tackle it later if it breaks. Shouldn't be too hard to fix but will require expanding the data structure a bit.
+    loop do
       puts %(Enter the number of the filter you'd like to change.)
-      i = gets.to_i - 1
-      return Filter.all_current.keys[i] if i >= 0 && i < Filter.all_current.keys.count  
-    }
-  end
-    
-  def show_current(filter)
-    current = [current_filters[filter]].flatten
-    if current.count == 0 
-      puts %(There are no #{filter.to_s} left to select!)
-    else
-      puts %(Current #{filter.titlelize} selected:)
-      current.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+      i = gets.to_i
+      return Filter.all_active[i - 1] if i.between?(1, Filter.all_active.count)
     end
   end
-
-  def available_terms_for(filter) # => available terms
-    all = [all_terms[filter]].flatten
-    current = [current_filters[filter]].flatten
-    all.select { |term| !current.include?(term)} 
+     
+  def show_current_and_available
+    show_current
+    show_available
   end
   
-  def show_available(filter) # => available   
-    available = available_terms_for(filter)
-    if available.count == 0 
-      puts %(You haven't selected any #{filter.to_s}!)
-    else
-      puts %(Available #{filter.titlelize}:)
-      available.each.with_index(1) { |term, i| puts "#{i}. #{term}" } 
-    end
+  def current_terms
+    [@working_filter.selected_terms].flatten
   end
 
-  def show_current_and_available(filter)
-    show_current(filter)
-    show_available(filter)
+  def show_current
+    if current_terms.count == 0 
+      puts %(There are no #{@working_filter.name.to_s} left to select!)
+    else
+      puts %(Current #{@working_filter.name.titleize} selected:)
+      current_terms.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    end
+  end
+  
+  def show_available # => available   
+    if @working_filter.available_terms.count == 0 
+      puts %(You haven't selected any #{@working_filter.name.to_s}!)
+    else
+      puts %(Available #{@working_filter.name.titleize}:)
+      @working_filter.available_terms.each.with_index(1) { |term, i| puts "#{i}. #{term}" } 
+    end
   end
 
   def add_or_remove_terms(filter)
@@ -104,7 +66,7 @@ class CLI
     
     case arg
     when 'exit'  
-      show_all_filters
+      show_all_active_filters
     when 'add'
       current_filters[filter] << available[num]
       show_current_and_available(filter)
@@ -120,35 +82,14 @@ class CLI
   end
 
   def run
-    set_backup_values
-    show_all_filters
-    filter = ask_for_filter_number
+    show_all_active_filters
+    @working_filter = ask_for_filter_number
     show_current_and_available(filter)
     add_or_remove_terms(filter)
   end
-
-  def set_backup_values
-    if current_filters == nil
-      puts "setting backup filters"
-      self.current_filters = {
-        subjects: ["Fiction", "Mystery"],
-        length: "1:30-3:00",
-        audience: "General Adult",
-        date_added:"Last 3 Months",
-        language: "English",
-      }
-    end
-    if all_terms == nil 
-      self.all_terms = {
-        subjects: ["Non-fiction", "Biography", "Movies and Television", "Fiction", "Mystery"],
-        audience: ["General Adult", "Juvenile", "Young Adult", "Mature Adult",]
-      }
-    end
-  end
-
 end
 
-class C_LI
+class C_LI # the actual scraping interface 
 
   def get_books_from(url)
 
@@ -206,4 +147,8 @@ class C_LI
   end
 end
 
-# CLI.new.run
+class Symbol # titleize extension
+  def titleize
+    self.to_s.gsub('_',' ').gsub(/\w+/) {|x| x.capitalize}
+  end
+end
