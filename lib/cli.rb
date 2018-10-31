@@ -75,9 +75,21 @@ class CLI
     available = available_terms_for(filter)
     puts %(Available #{filter.titlelize}:)
     available.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
-    # binding.pry
+
+    # ask for input
     puts %(To add from available terms, enter "add " and the number . Ex. "add 1" to add "#{available[0]}")
-    
+    input = gets
+    # puts input
+    return if !input
+    binding.pry if input == 'add 1'
+    terms = input.split(' ')
+    arg = terms[0]
+    num = (terms[1].to_i - 1) if terms[1]
+    case arg
+    when 'add'
+      # binding.pry
+      current_filters[filter] << available[num]    
+    end
   end
 
   def run
@@ -85,7 +97,6 @@ class CLI
     show_filters
     filter = ask_for_filter_number
     show_current(filter)
-    # show_available(filter)
     add_or_remove_terms(filter)
   end
 

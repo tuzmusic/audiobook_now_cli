@@ -1,42 +1,41 @@
 require '../spec_helper'
 # require '../../lib/cli.rb'
 
-current = {
-    subjects: ["Fiction", "Mystery"],
-    length: "1:30-3:00",
-    audience: "General Adult",
-    date_added:"Last 3 Months",
-    language: "English",
-  }
-cli = CLI.new
-
-subject2 = "Non-fiction"
-subject3 = "Biography"
-subject4 = "Movies and Television"
-
-aud1 = "Juvenile"
-aud2 = "Young Adult"
-aud3 = "Mature Adult"
-
-avail_terms = {
-  subjects: [subject2, subject3, subject4],
-  audience: [aud1, aud2, aud3]
-}
-
-all_terms = {
-  subjects: [subject2, subject3, subject4, "Fiction", "Mystery"],
-  audience: [aud1, aud2, aud3, "General Adult"]
-}
-
-cli.current_filters = {
-    subjects: ["Fiction", "Mystery"],
-    length: "1:30-3:00",
-    audience: "General Adult",
-    date_added:"Last 3 Months",
-    language: "English",
-  }
 
 context 'CLI for Sorting' do
+  cli = CLI.new
+  current = {}
+  before do
+    current = {
+        subjects: ["Fiction", "Mystery"],
+        length: "1:30-3:00",
+        audience: "General Adult",
+        date_added:"Last 3 Months",
+        language: "English",
+      }
+    cli = CLI.new
+    
+    avail_terms = {
+      subjects: ["Non-fiction", "Biography", "Movies and Television"],
+      audience: ["Juvenile", "Young Adult", "Mature Adult"]
+    }
+    
+    all_terms = {
+      subjects: ["Non-fiction", "Biography", "Movies and Television", "Fiction", "Mystery"],
+      audience: ["Juvenile", "Young Adult", "Mature Adult", "General Adult"]
+    }
+
+    cli.all_terms = all_terms
+
+    cli.current_filters = {
+        subjects: ["Fiction", "Mystery"],
+        length: "1:30-3:00",
+        audience: "General Adult",
+        date_added:"Last 3 Months",
+        language: "English",
+      }
+  end
+
   describe 'show_filters' do
     it 'displays the available filters, with the selected filters' do
 
@@ -104,17 +103,15 @@ context 'CLI for Sorting' do
 
   describe 'available_terms_for(filter)' do
     
-    cli.all_terms = all_terms
-
     it 'returns available values for a filter' do
       
-      expect(cli.available_terms_for(:subjects) ).to include(subject2)
-      expect(cli.available_terms_for(:subjects) ).to include(subject3)
-      expect(cli.available_terms_for(:subjects) ).to include(subject4)
+      expect(cli.available_terms_for(:subjects) ).to include("Non-fiction")
+      expect(cli.available_terms_for(:subjects) ).to include("Biography")
+      expect(cli.available_terms_for(:subjects) ).to include("Movies and Television")
              
-      expect(cli.available_terms_for(:audience) ).to include(aud1)
-      expect(cli.available_terms_for(:audience) ).to include(aud2)
-      expect(cli.available_terms_for(:audience) ).to include(aud3)
+      expect(cli.available_terms_for(:audience) ).to include("Juvenile")
+      expect(cli.available_terms_for(:audience) ).to include("Young Adult")
+      expect(cli.available_terms_for(:audience) ).to include("Mature Adult")
     end
 
     it %(doesn't returns filters that are currently selected) do
@@ -130,20 +127,18 @@ context 'CLI for Sorting' do
     it 'displays the avialable filters' do
       allow($stdout).to receive(:puts)
       
-      cli.all_terms = all_terms
-      expect($stdout).to receive(:puts).with("1. "+subject2)
-      expect($stdout).to receive(:puts).with("2. "+subject3)
-      expect($stdout).to receive(:puts).with("3. "+subject4)
-      cli.add_or_remove_terms(:subjects) 
-       
-      expect($stdout).to receive(:puts).with("1. "+aud1)
-      expect($stdout).to receive(:puts).with("2. "+aud2)
-      expect($stdout).to receive(:puts).with("3. "+aud3)
+      expect($stdout).to receive(:puts).with("1. Non-fiction")
+      expect($stdout).to receive(:puts).with("2. Biography")
+      expect($stdout).to receive(:puts).with("3. Movies and Television")
+      cli.add_or_remove_terms(:subjects)
+
+      expect($stdout).to receive(:puts).with("1. Juvenile")
+      expect($stdout).to receive(:puts).with("2. Young Adult")
+      expect($stdout).to receive(:puts).with("3. Mature Adult")
       cli.add_or_remove_terms(:audience)
     end
 
     it %(doesn't show filters that are currently selected) do
-      cli.all_terms = all_terms
       expect($stdout).to_not receive(:puts).with(current[:subjects][0])
       expect($stdout).to_not receive(:puts).with(current[:subjects][1])
       cli.add_or_remove_terms(:subjects)
@@ -152,19 +147,47 @@ context 'CLI for Sorting' do
       cli.add_or_remove_terms(:audience)
     end
     
-    it 'allows a user to add a term from the filter using "add (number)"' do
+    it 'instructs the user to add a term from the filter using "add (number)"' do
       allow($stdout).to receive(:puts)
+      allow(cli).to receive(:gets)
       expect($stdout).to receive(:puts).with(%(To add from available terms, enter "add " and the number . Ex. "add 1" to add "Non-fiction"))
-
-      allow(cli).to receive(:gets).and_return('1') 
-
-
+      expect(cli).to receive(:gets).exactly(1).times
       cli.add_or_remove_terms(:subjects)
     end
 
-    it 'displays the currently selected terms after a term is added' do; expect(true).to eq(false); end
+    it 'allows a user to add a term from the filter using "add (number)"' do
+      allow($stdout).to receive(:puts)
+      allow(cli).to receive(:gets).and_return('add 1') 
+      expect(cli.current_filters[:subjects]).to include("Non-fiction")
+      cli.add_or_remove_terms(:subjects)
+    end
     
-    it 'allows a user to remove a term from the filter' do; expect(true).to eq(false); end
+    it 'displays the currently selected terms after a term is added' do
+      cli.current_filters[:subjects] = ["Fiction", "Mystery"]
+      allow($stdout).to receive(:puts)
+
+      allow(cli).to receive(:gets).and_return('add 1')
+      expect($stdout).to receive(:puts).with("1. Fiction")
+      expect($stdout).to receive(:puts).with("2. Mystery")
+      expect($stdout).to receive(:puts).with("3. Non-fiction")
+      
+      cli.add_or_remove_terms(:subjects)
+    end
+    
+    it 'instructs the user to remove a term from the filter using "remove (number)"' do
+      allow($stdout).to receive(:puts)
+      allow(cli).to receive(:gets)
+      expect($stdout).to receive(:puts).with(%(To remove a current term, enter "remove " and the number . Ex. "remove 1" to remove "Fiction"))
+      expect(cli).to receive(:gets).exactly(1).times
+      cli.add_or_remove_terms(:subjects)
+    end
+
+    it 'allows a user to remove a term from the filter using "remove (number)"' do
+      allow($stdout).to receive(:puts)
+      allow(cli).to receive(:gets).and_return('remove 1') 
+      expect(cli.current_filters[:subjects]).to_not include("Fiction")
+      cli.add_or_remove_terms(:subjects)
+    end
     
     it 'displays the currently selected terms after a term is removed' do; expect(true).to eq(false); end
     
@@ -181,17 +204,13 @@ context 'CLI for Sorting' do
   describe 'Sorting by subject' do
 
     it 'displays a list of available subjects to sort by' do
-      subject1 = "Mystery"
-      subject2 = "Non-fiction"
-      subject3 = "Biography"
-      subject4 = "Movies and Television"
-
+     
       allow($stdout).to receive(:puts)
 
-      expect($stdout).to receive(:puts).with(subject1)
-      expect($stdout).to receive(:puts).with(subject2)
-      expect($stdout).to receive(:puts).with(subject3)
-      expect($stdout).to receive(:puts).with(subject4)
+      expect($stdout).to receive(:puts).with("Mystery")
+      expect($stdout).to receive(:puts).with("Non-fiction")
+      expect($stdout).to receive(:puts).with("Biography")
+      expect($stdout).to receive(:puts).with("Movies and Television")
       
     end
     
