@@ -43,7 +43,7 @@ class CLI
     CLI.filters
   end
 
-  def show_filters
+  def show_all_filters
     CLI.filters.each.with_index(1) { |filter, i|
       value = [current_filters[filter]] # TO-DO: Each filter should have its own description property?
       puts %(#{i}. #{filter.titlelize}: #{[value].join(', ')})
@@ -60,8 +60,12 @@ class CLI
     
   def show_current(filter)
     current = [current_filters[filter]].flatten
-    puts %(Current #{filter.titlelize} selected:)
-    current.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    if current.count == 0 
+      puts %(There are no #{filter.to_s} left to select!)
+    else
+      puts %(Current #{filter.titlelize} selected:)
+      current.each.with_index(1) { |term, i| puts "#{i}. #{term}" }
+    end
   end
 
   def available_terms_for(filter) # => available terms
@@ -72,8 +76,12 @@ class CLI
   
   def show_available(filter) # => available   
     available = available_terms_for(filter)
-    puts %(Available #{filter.titlelize}:)
-    available.each.with_index(1) { |term, i| puts "#{i}. #{term}" } 
+    if available.count == 0 
+      puts %(You haven't selected any #{filter.to_s}!)
+    else
+      puts %(Available #{filter.titlelize}:)
+      available.each.with_index(1) { |term, i| puts "#{i}. #{term}" } 
+    end
   end
 
   def show_current_and_available(filter)
@@ -83,11 +91,11 @@ class CLI
 
   def add_or_remove_terms(filter)
     available = available_terms_for(filter)
-    # binding.pry
+
     # show options
     puts %(To add from available terms, enter "add " and the number . Ex. "add 1" to add "#{available[0]}")
     puts %(To remove a current term, enter "remove " and the number . Ex. "remove 1" to remove "#{current_filters[filter][0]}")
-    puts %(To show the current and available subjects, enter "list")
+    puts %(To show the lists of current and available subjects, enter "list")
     puts %(To return to the list of all currently selected filters, enter "exit")
     
     # ask for input
@@ -100,7 +108,7 @@ class CLI
     
     case arg
     when 'exit'  
-      # return from function back to upper prompt
+      show_all_filters
     when 'add'
       current_filters[filter] << available[num]
       show_current_and_available(filter)
@@ -117,7 +125,7 @@ class CLI
 
   def run
     set_backup_values
-    show_filters
+    show_all_filters
     filter = ask_for_filter_number
     show_current_and_available(filter)
     add_or_remove_terms(filter)

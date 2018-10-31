@@ -39,7 +39,7 @@ context 'CLI for Sorting' do
       allow($stdout).to receive(:puts)
   end
 
-  describe 'show_filters' do
+  describe 'show_all_filters' do
     it 'displays the available filters, with the selected filters' do
       expect($stdout).to receive(:puts).with("1. Subjects: Fiction, Mystery")
       expect($stdout).to receive(:puts).with("2. Length: 1:30-3:00")
@@ -47,7 +47,7 @@ context 'CLI for Sorting' do
       expect($stdout).to receive(:puts).with("4. Date Added: Last 3 Months")
       expect($stdout).to receive(:puts).with("5. Language: English")
       
-      cli.show_filters    
+      cli.show_all_filters    
     end    
   end
   
@@ -179,7 +179,7 @@ context 'CLI for Sorting' do
     end
     
     it 'instructs a user to re-display the list of available terms by typing "list"' do
-      expect($stdout).to receive(:puts).with(%(To show the current and available subjects, enter "list"))
+      expect($stdout).to receive(:puts).with(%(To show the lists of current and available subjects, enter "list"))
       cli.add_or_remove_terms(:subjects)            
     end
 
@@ -218,15 +218,10 @@ context 'CLI for Sorting' do
     it 'accounts for empty available or current arrays in displaying' do
       cli.current_filters[:subjects] = []
       cli.all_terms[:subjects] = []
-      expect(stdout).to receive(:puts).with(%(No subjects are selected!))
-      expect(stdout).to receive(:puts).with(%(There are no subjects available to select!))
-      
-      show_current_and_available(filter)
-    end
-
-    it 'accounts for empty available or current arrays in allowing input' do
-      expect(true).to eq(false)
-    end
+      expect($stdout).to receive(:puts).with(%(You haven't selected any subjects!))
+      expect($stdout).to receive(:puts).with(%(There are no subjects left to select!))      
+      cli.show_current_and_available(:subjects)
+    end 
   end
 
     # it '' do; expect(true).to eq(false); end
